@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# This is bound to Shift+PrintScreen by default, requires maim. It lets you
+# choose the kind of screenshot to take, including copying the image or even
+# highlighting an area to copy. scrotcucks on suicidewatch right now.
+
+# case "$(printf "a selected area\\ncurrent window\\nfull screen\\na selected area (copy)\\ncurrent window (copy)\\nfull screen (copy)" | dmenu -l 6 -p "Screenshot" -c -bw 2)" in
+# 	"a selected area") maim -s pic-selected-"$(date '+%y%m%d-%H%M-%S').png" ;;
+# 	"current window") maim -i "$(xdotool getactivewindow)" pic-window-"$(date '+%y%m%d-%H%M-%S').png" ;;
+# 	"full screen") sleep 0.5 ; maim pic-full-"$(date '+%y%m%d-%H%M-%S').png" ;;
+# 	"a selected area (copy)") maim -s | xclip -selection clipboard -t image/png ;;
+# 	"current window (copy)") maim -i "$(xdotool getactivewindow)" | xclip -selection clipboard -t image/png ;;
+# 	"full screen (copy)") sleep 0.5 ; maim | xclip -selection clipboard -t image/png ;;
+# esac
+
+cache=~/.cache
+folder=~/zdj/screenshots
+
+# making this a function prevents this from runnning after exiting first dmenu
+nowwhat()
+{
+case "$(printf "copy to clipboard\\nsave to $folder\\ndelete" | dmenu -p "now what ?")" in
+# case "$(printf "copy to clipboard\\nsave to $folder\\ndelete" | dmenu -g 3 -p "now what ?" -c -bw 2)" in
+	"copy to clipboard") xclip -selection clipboard -t image/png -i $cache/maimpic.png ;;
+	"save to $folder") cp $cache/maimpic.png $folder/screenshot-"$(date '+%y.%m.%d-%H:%M:%S').png" ;;
+	"delete") rm $cache/maimpic.png ;;
+esac
+}
+
+# "first dmenu"
+# case "$(printf "selected area\\ncurrent window\\nfull screen" | dmenu -l 3 -p "Screenshot" -c -bw 2)" in
+case "$(printf "selected area\\ncurrent window\\nfull screen" | dmenu -p "screenshot")" in
+	"selected area") maim -s $cache/maimpic.png ; nowwhat ;;
+	"current window") maim -i "$(xdotool getactivewindow)" $cache/maimpic.png ; nowwhat ;;
+	"full screen") sleep 0.5 ; maim $cache/maimpic.png ; nowwhat ;;
+esac
+
+
+rm $cache/maimpic.png

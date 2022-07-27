@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# pkexec sh -c "
+# cd /home/lubunuku/.config/dmenu
+# make clean install
+# cd /home/lubunuku/.config/dwm
+# make clean install
+# "
+
+function notify-send() {
+    #Detect the name of the display in use
+    local display=":$(ls /tmp/.X11-unix/* | sed 's#/tmp/.X11-unix/X##' | head -n 1)"
+
+    #Detect the user using such display
+    local user=$(who | grep '('$display')' | awk '{print $1}' | head -n 1)
+
+    #Detect the id of the user
+    local uid=$(sudo -u lubunuku id -u $user)
+
+    sudo -u lubunuku DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus notify-send "$@"
+}
+# needs to be ru as root
+cd /home/lubunuku/.config/dwm ; make clean install && notify-send "dwm recompiled successfully"
+cd /home/lubunuku/.config/dmenu ; make clean install && notify-send "dmenu recompiled successfully"
+cd /home/lubunuku/.config/tabbed-flexipatch ; make clean install && notify-send "tabbed recompiled successfully"
