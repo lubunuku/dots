@@ -1,7 +1,0 @@
-#!/bin/dash
-
-echo '#!/bin/dash
-
-' > ~/.local/bin/$1
-chmod +x ~/.local/bin/$1
-$EDITOR ~/.local/bin/$1
